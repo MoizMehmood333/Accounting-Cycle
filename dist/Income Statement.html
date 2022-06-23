@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Financial Accounting Project</title>
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg  navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand " href="#">ACCOUNTING CYCLE</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+                aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav ">
+                    <li class="nav-item">
+                        <a class="nav-link " aria-current="page" href="./index.html">Jounal Gernal</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="./accounts.html">Accounts</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link " href="./tAccounts.html">T Accounts</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link " href="./trailBalance.html">Trail Balance</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            Statements
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <li><a class="dropdown-item active" href="./Income Statement.html">Income Statement</a></li>
+                            <li><a class="dropdown-item" href="./ownerEquityStatement.html">Owner Equity Statement</a>
+                            </li>
+                            <li><a class="dropdown-item" href="./balanceSheet.html">BalanceSheet</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link " href="./adjustments.html">Adjustment</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <br>
+    <div class="input">
+        <div class="container">
+
+            <div class="container">
+                <form>
+                    <button class="col-12" id="getNetIncome">Get Income Statement</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+    <br>
+    <div class="center">
+        <h3>Income Statement</h3>
+    </div>
+
+
+    <div class="outputIncome" style="margin-top: 20px;">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-2">
+                    Revenue:
+                </div>
+                <div class="col-6">
+                    <p id="revnuesOut"></p>
+                </div>
+            </div>
+            <br>
+            <div class="row justify-content-center">
+                <div class="col-2">
+                    Expenses:
+                </div>
+                <div class="col-6">
+                    <p id="expensesOut"></p>
+                </div>
+            </div>
+            <br>
+            <div class="row justify-content-center">
+                <div class="col-2">
+                    Net Income:
+                </div>
+                <div class="col-6">
+                    <p id="netIncome" style="border: 1px solid black; width: 30%;"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script type="module">
+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.3/firebase-app.js";
+        import {
+            getFirestore, collection, onSnapshot, addDoc
+            , deleteDoc, doc,
+            query, where,
+            orderBy, serverTimestamp,
+            getDocs,
+            updateDoc
+
+        } from "https://www.gstatic.com/firebasejs/9.8.3/firebase-firestore.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "AIzaSyCG0BStVLQS8B3Gux2TSoz9YTxHOd_lOvo",
+            authDomain: "financial-account-fa9d9.firebaseapp.com",
+            projectId: "financial-account-fa9d9",
+            storageBucket: "financial-account-fa9d9.appspot.com",
+            messagingSenderId: "11670834303",
+            appId: "1:11670834303:web:8310ea5f248efd1759c34a",
+            measurementId: "G-K54B8W3NQ8"
+        };
+
+        //init Firebase app
+
+        initializeApp(firebaseConfig)
+
+        // init services
+
+        const db = getFirestore()
+
+        const gernalRef = collection(db, "TAccounts")
+        const incomeRef = collection(db, "Net Income")
+        let type = ["Revenue", "Expenses"]
+        let addRev = []
+        let addExp = []
+
+        const postIncome = document.querySelector("#getNetIncome")
+        let a = []
+
+        postIncome.onclick = (e) => {
+            e.preventDefault()
+            getDocs(incomeRef)
+                .then((snapshot) => {
+                    let IR = []
+                    snapshot.docs.forEach((doc) => {
+                        IR.push({ id: doc.id })
+                    })
+                    console.log(IR)
+                    IR.forEach((b) => {
+                        deleteDoc(doc(db, "Net Income", b.id))
+                            .then(() => {
+                            })
+                            .catch(err => {
+                                console.log(err)
+                            })
+                    })
+                })
+            getDocs(gernalRef)
+                .then((snapshot) => {
+                    let TAccounts = []
+                    snapshot.docs.forEach((doc) => {
+                        TAccounts.push({ id: doc.id, ...doc.data() })
+                    })
+                    console.log(TAccounts)
+                    for (let index = 0; index < type.length; index++) {
+                        for (let i = 0; i < TAccounts.length; i++) {
+                            if (TAccounts[i].Type == type[index]) {
+                                console.log(TAccounts[i])
+                                if (TAccounts[i].Type == "Revenue") {
+                                    addRev.push(TAccounts[i].Credit)
+                                }
+                                else {
+                                    addExp.push(TAccounts[i].Debit)
+                                }
+                            }
+                        }
+
+
+                    }
+                    var sumRev = addRev.reduce(function (a, b) {
+                        return a + b;
+                    }, 0);
+                    var sumExp = addExp.reduce(function (a, b) {
+                        return a + b;
+                    }, 0);
+                    console.log(sumRev)
+                    console.log(sumExp)
+                    var TotalRev = document.getElementById('revnuesOut')
+                    TotalRev.innerText = sumRev
+                    var TotalExp = document.getElementById('expensesOut')
+                    TotalExp.innerText = sumExp
+                    var netIncome = document.getElementById('netIncome')
+                    netIncome.innerText = sumRev - sumExp
+                    addDoc(incomeRef, { NetIncome: parseInt(sumRev - sumExp) })
+                    addRev = []
+                    addExp = []
+                })
+        }
+
+
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

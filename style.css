@@ -1,0 +1,57 @@
+.center {
+    margin: auto;
+    margin-top: 40px;
+    width: 70%;
+    border-bottom: 3px solid green;
+    padding: 10px;
+}
+#postToAccounts{
+    margin-top: 40px;
+    padding: 10px;
+}
+.input {
+    margin: auto;
+    margin-top: 15px;
+    width: 70%;
+    padding: 10px;
+
+}
+
+.submit {
+    margin: auto;
+    margin-top: 15px;
+    width: 70%;
+    padding: 10px;
+
+}
+
+#submitButton {
+    padding: 2px 19%;
+}
+
+.output {
+    margin: auto;
+    margin-top: 15px;
+    width: 70%;
+    /* padding: 10px; */
+}
+
+table {
+    width: 100%;
+}
+
+table,
+th,
+td {
+    border: 1px solid grey;
+    border-collapse: collapse;
+}
+
+tr:nth-child(even) {
+    background-color: rgba(20, 117, 5, 0.4);
+}
+
+th:nth-child(even),
+td:nth-child(even) {
+    background-color: rgba(18, 158, 13, 0.248);
+}

@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Financial Accounting Project</title>
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg  navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand " href="#">ACCOUNTING CYCLE</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+                aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav ">
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="./index.html">Jounal Gernal</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="./accounts.html">Accounts</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link " href="./tAccounts.html">T Accounts</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="./trailBalance.html">Trail Balance</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            Statements
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <li><a class="dropdown-item" href="./Income Statement.html">Income Statement</a></li>
+                            <li><a class="dropdown-item" href="./ownerEquityStatement.html">Owner Equity Statement</a>
+                            </li>
+                            <li><a class="dropdown-item" href="./balanceSheet.html">BalanceSheet</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link " href="./adjustments.html">Adjustment</a>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="center">
+        <h3>Accounts</h3>
+
+    </div>
+
+
+    <div class="input">
+        <div class="container">
+            <form class="add">
+                <label for="title" class="col-4">Enter the Account Title:</label>
+                <input type="text" name="title" class="col-6" placeholder="Account Title"><br>
+                <br><label for="Type" class="col-4">Select Account Type:</label>
+                <select name="Type" class="col-6 " id="Type">
+                    <option value="Assests">Assets</option>
+                    <option value="Liabilities">Liabilities</option>
+                    <option value="Owner Equity">Owner Equity</option>
+                    <option value="Expenses">Expenses</option>
+                    <option value="Revenue">Revenue</option>
+                    <option value="Drawing">Drawing</option>
+
+                </select><br>
+                <br>
+                <button class="col-10">add a new account</button>
+                <br><br>
+            </form>
+            <div style="border-top:3px solid rgb(83, 92, 83); padding-top: 15px;">
+
+                <form class="delete" >
+                    <label for="id" class="col-4">Account id:</label>
+                    <input type="text" class="col-6 " name="id" >
+                    <br><br>
+                    <button class="col-10 ">delete an Account</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="center">
+        <h3>Gernal Journal Entries</h3>
+    </div>
+
+    <div style="margin-bottom: 40px;">
+        <div class="outputAccounts">
+            <div class="container col-9" style="margin-top: 20px;">
+                <table class="accountTable" id="tbody">
+                    <tr>
+                        <th>Account ID</th>
+                        <th>Account Title</th>
+                        <th>Account Type</th>
+                    </tr>
+
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script src="bundle.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
