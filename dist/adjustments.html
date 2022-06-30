@@ -25,7 +25,7 @@
                         <a class="nav-link" href="./accounts.html">Accounts</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="./index.html">Jounal Gernal</a>
+                        <a class="nav-link " aria-current="page" href="./index.html">Jounal Gernal</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link " href="./tAccounts.html">T Accounts</a>
@@ -55,30 +55,99 @@
 
     <div class="center">
         <h3>Insert Adjustment Entries</h3>
+
     </div>
 
 
+    <div class="input">
+        <div class="container">
+            <form class="add">
+                <label for="debit" class="col-4">Enter the Debit Amount:</label>
+                <input type="number" name="debit" class="col-6" placeholder="Debit Amount " required><br>
+                <br>
+                <label for="titleDebit" class="col-4">Select Debit Account:</label>
+                <select name="titleDebit" class="col-6 " id="TitlesDebit">
+                </select>
+                <br><br>
+                <label for="debitType" class="col-4">Select Debit Account Type:</label>
+                <select name="debitType" class="col-6 " id="debitType">
+                    <option value="Assests">Assets</option>
+                    <option value="Liabilities">Liabilities</option>
+                    <option value="Owner Equity">Owner Equity</option>
+                    <option value="Expenses">Expenses</option>
+                    <option value="Revenue">Revenue</option>
+                    <option value="Drawing">Drawing</option>
+                    <option value="Depreciation">Depreciation</option>
+                </select><br><br>
+                <label for="credit" class="col-4">Enter the Credit Amount:</label>
+                <input type="number" name="credit" class="col-6" placeholder="Credit Amount" required><br>
+                <br>
+
+                <label for="titleCredit" class="col-4">Select Credit Account:</label>
+                <select name="titleCredit" class="col-6 " id="TitlesCredit">
+                </select>
+                <br>
+                <br>
+                <label for="creditType" class="col-4">Select Credit Account Type:</label>
+                <select name="creditType" class="col-6 " id="creditType">
+                    <option value="Assests">Assets</option>
+                    <option value="Liabilities">Liabilities</option>
+                    <option value="Owner Equity">Owner Equity</option>
+                    <option value="Expenses">Expenses</option>
+                    <option value="Revenue">Revenue</option>
+                    <option value="Drawing">Drawing</option>
+                    <option value="Depreciation">Depreciation</option>
+                </select><br><br>
+                <button class="col-10">add Adjustment Entry</button>
+                <br><br>
+            </form>
+
+        </div>
+    </div>
     <div class="center">
-        <h3>Update T-Accounts </h3>
+        <h3>Delete All Adjustment Entries</h3>
+
+    </div>
+    <div class="input">
+        <div class="container">
+
+
+            <form>
+
+                <button class="col-12" id="deleteAdjustments" onclick="deleteAdjustments()">Delete All
+                    Adjustments</button>
+            </form>
+
+        </div>
     </div>
 
-    
     <div class="center">
         <h3>Adjustments Entries </h3>
     </div>
 
+    <div class="input">
+        <div class="container">
+
+            <div class="input">
+                <div class="container">
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+    </div>
 
     <div style="margin-bottom: 40px;">
         <div class="output">
             <div class="container">
-                <table class="journalGernalTable">
+                <table class="adjustmentsTable">
                     <tr>
                         <th>Account ID</th>
                         <th>Account Title</th>
                         <th>Account Type</th>
                         <th>Debit</th>
                         <th>Credit</th>
-
                     </tr>
                 </table>
             </div>
@@ -128,8 +197,147 @@
 
         //collection ref
         const colRef = collection(db, "Accounts")
+        const adjRef = collection(db, "Adjustments")
 
-       
+
+        var titleSelect = document.querySelector('#TitlesDebit')
+        var creditSelect = document.querySelector('#TitlesCredit')
+
+
+        //get docs for select statement
+        let accounts = []
+        getDocs(colRef)
+            .then((snapshot) => {
+                let accounts = []
+                snapshot.docs.forEach((doc) => {
+                    if (!(doc.data().Title).match("Cash")) {
+                        // console.log(doc.data().Title)
+                        accounts.push({ id: doc.id, ...doc.data() })
+                    }
+
+                })
+                accounts.forEach((element) => {
+                    let option = new Option(element.Title, element.Title)
+                    titleSelect.appendChild(option)
+                })
+                accounts.forEach((element) => {
+                    let option = new Option(element.Title, element.Title)
+                    creditSelect.appendChild(option)
+                })
+            })
+            .catch(err => {
+                console.log(err)
+            })
+
+
+
+        const addGernalForm = document.querySelector('.add')
+        addGernalForm.addEventListener('submit', (e) => {
+            e.preventDefault()
+            let arr = []
+            if (addGernalForm.debit.value != addGernalForm.credit.value) {
+                alert("Debit and Credit Amount should be equal")
+                addGernalForm.reset()
+            } else {
+                arr.push({ Title: addGernalForm.titleDebit.value, Type: addGernalForm.debitType.value, Debit: parseInt(addGernalForm.debit.value), Credit: parseInt(0), createdAt: serverTimestamp() },
+                    { Title: addGernalForm.titleCredit.value, Type: addGernalForm.creditType.value, Credit: parseInt(addGernalForm.credit.value), Debit: parseInt(0), createdAt: serverTimestamp() })
+                addDoc(adjRef, {
+                    Title: addGernalForm.titleDebit.value,
+                    Type: addGernalForm.debitType.value,
+                    Debit: parseInt(addGernalForm.debit.value),
+                    Credit: parseInt(0), createdAt: serverTimestamp()
+                })
+                addDoc(adjRef, {
+                    Title: addGernalForm.titleCredit.value,
+                    Type: addGernalForm.creditType.value,
+                    Credit: parseInt(addGernalForm.credit.value),
+                    Debit: parseInt(0), createdAt: serverTimestamp()
+                })
+                    .then(() => {
+                        addGernalForm.reset()
+                        location.reload()
+                    })
+            }
+            console.log(arr)
+
+
+            // addDoc(gernalRef, {
+            //     Title: addGernalForm.title.value,
+            //     Type: addGernalForm.Type.value,
+            //     Debit: parseInt(addGernalForm.debit.value),
+            //     Credit: parseInt(addGernalForm.credit.value),
+            //     createdAt: serverTimestamp()
+            // })
+            // .then(() => {
+            //     addGernalForm.reset()
+            //     location.reload()
+            // })
+        })
+
+
+        //getting real time data
+
+        const adj = query(adjRef, orderBy('createdAt'))
+
+        onSnapshot(adj, (snapshot) => {
+            let adjustments = []
+            snapshot.docs.forEach((doc) => {
+                adjustments.push({ id: doc.id, ...doc.data() })
+            })
+            let table = document.querySelector('.adjustmentsTable')
+
+            adjustments.forEach(element => {
+                // console.log(element)
+                let template = `
+            <tr class="${++index}">
+                <td>${element.id}</td>
+                <td>${element.Title}</td>
+                <td>${element.Type}</td>
+                <td>${element.Debit}</td>
+                <td>${element.Credit}</td>
+
+            </tr>
+        `
+                table.innerHTML += template;
+            });
+        })
+
+
+        const deleteAdjustments = document.querySelector('#deleteAdjustments')
+        deleteAdjustments.onclick = (e) => {
+            e.preventDefault()
+            let idOfAdjust = []
+            getDocs(adjRef)
+                .then((snapshot) => {
+                    let accounts = []
+                    snapshot.docs.forEach((doc) => {
+                        idOfAdjust.push({ id: doc.id, ...doc.data() })
+                    })
+                    idOfAdjust.forEach((element) => {
+                        const idRef = doc(db, 'Adjustments', element.id)
+                        deleteDoc(idRef)
+                            .then(() => {
+                                location.reload()
+                            })
+                    })
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+            console.log(deleteAdjustments)
+        }
+
+        // deleteAdjustments.onClick((e) => {
+        //     e.preventDefault()
+        //     // const ocRef = doc(db, 'GernalJournalEntries', deleteAccountForm.id.value)
+        //     // deleteDoc(ocRef)
+        //     //     .then(() => {
+        //     //         deleteAccountForm.reset()
+        //     //         location.reload()
+        //     //     })
+        //     console.log(deleteAdjustments)
+        // })
+
 
 
     </script>
