@@ -63,7 +63,8 @@
             <div class="container">
                 <form>
 
-                    <button class="col-12" id="postToAccounts" onclick="update()">Update/Post To The Accounts (Wait for 5 Seconds)</button>
+                    <button class="col-12" id="postToAccounts" onclick="update()">Update/Post To The Accounts (Wait for
+                        6 Seconds)</button>
                 </form>
             </div>
 
@@ -132,10 +133,114 @@
 
         const db = getFirestore()
 
+        // //collection ref
+        // const colRef = collection(db, "Accounts")
+        // const gJRef = collection(db, "GernalJournalEntries")
+        // const tAccountss = collection(db, "TAccounts")
+
+
+
+
+        // //get docs for select statement
+        // let accountsForTypePurpose = []
+
+
+
+
+        // const postToAccount = document.querySelector("#postToAccounts")
+
+
+        // let accounts = []
+
+        // postToAccount.onclick = (e) => {
+        //     e.preventDefault()
+        //     getDocs(tAccountss)
+        //         .then((snapshot) => {
+        //             let TA = []
+        //             snapshot.docs.forEach((doc) => {
+        //                 TA.push({ id: doc.id })
+        //             })
+        //             console.log(TA)
+        //             TA.forEach((a) => {
+        //                 deleteDoc(doc(db, "TAccounts", a.id))
+        //                     .then(() => {
+        //                     })
+        //                     .catch(err => {
+        //                         console.log(err)
+        //                     })
+        //             })
+        //             console.log("kaam karraha hay jani")
+
+        //             getDocs(colRef)
+        //                 .then((snapshot) => {
+        //                     snapshot.docs.forEach(doc => {
+        //                         accounts.push({ Title: doc.data().Title, Type: doc.data().Type })
+        //                     });
+        //                     accounts.forEach((element, i) => {
+        //                         const q = query(gJRef, where('Title', '==', element.Title))
+        //                         getDocs(q)
+        //                             .then((snap) => {
+        //                                 let tAcc = []
+        //                                 let addCredit = []
+        //                                 let addDebit = []
+        //                                 snap.docs.forEach((ele) => {
+        //                                     // console.log(ele.data())
+        //                                     tAcc.push({ ...ele.data() })
+        //                                     addDebit.push(ele.data().Debit)
+        //                                     addCredit.push(ele.data().Credit)
+
+        //                                 })
+        //                                 var sumCredit = addCredit.reduce(function (a, b) {
+        //                                     return a + b;
+        //                                 }, 0);
+        //                                 var sumDebit = addDebit.reduce(function (a, b) {
+        //                                     return a + b;
+        //                                 }, 0);
+        //                                 var temp = 0
+        //                                 if (sumDebit - sumCredit < 0) {
+        //                                     sumCredit = sumCredit - sumDebit
+        //                                     sumDebit = 0
+        //                                 } else {
+        //                                     sumDebit = sumDebit - sumCredit
+        //                                     sumCredit = 0
+        //                                 }
+
+        //                                 addDoc(tAccountss, {
+        //                                     Title: accounts[i].Title,
+        //                                     Type: element.Type,
+        //                                     Debit: parseInt(sumDebit),
+        //                                     Credit: parseInt(sumCredit)
+        //                                 })
+
+        //                             })
+
+        //                     });
+        //                 })
+        //             return new Promise((resolve, reject) =>{
+        //                 setTimeout(()=>{
+        //                     resolve();
+        //                 },5000)
+        //             })        
+        //         })
+        //         .then(()=>{
+        //             location.reload()
+        //         })
+
+        //         .catch(err => {
+        //             console.log(err)
+        //         })
+
+
+
+        // }
+
+
         //collection ref
         const colRef = collection(db, "Accounts")
         const gJRef = collection(db, "GernalJournalEntries")
         const tAccountss = collection(db, "TAccounts")
+        const AdjustRef = collection(db, "Adjustments")
+
 
 
 
@@ -159,7 +264,7 @@
                     snapshot.docs.forEach((doc) => {
                         TA.push({ id: doc.id })
                     })
-                    console.log(TA)
+                    // console.log(TA)
                     TA.forEach((a) => {
                         deleteDoc(doc(db, "TAccounts", a.id))
                             .then(() => {
@@ -168,60 +273,75 @@
                                 console.log(err)
                             })
                     })
-                    console.log("kaam karraha hay jani")
-                    
+                    // console.log("kaam karraha hay jani")
+
                     getDocs(colRef)
                         .then((snapshot) => {
                             snapshot.docs.forEach(doc => {
                                 accounts.push({ Title: doc.data().Title, Type: doc.data().Type })
                             });
-                            accounts.forEach((element, i) => {
-                                const q = query(gJRef, where('Title', '==', element.Title))
-                                getDocs(q)
-                                    .then((snap) => {
-                                        let tAcc = []
-                                        let addCredit = []
-                                        let addDebit = []
-                                        snap.docs.forEach((ele) => {
-                                            // console.log(ele.data())
-                                            tAcc.push({ ...ele.data() })
-                                            addDebit.push(ele.data().Debit)
-                                            addCredit.push(ele.data().Credit)
+                            let finalEntries = []
+                            getDocs(AdjustRef)
+                                .then((snap) => {
+                                    snap.docs.forEach(element => {
+                                        finalEntries.push({ id: element.id, ...element.data() })
+                                    });
+                                    getDocs(gJRef)
+                                        .then((ele) => {
+                                            ele.docs.forEach(ele => {
+                                                finalEntries.push({ id: ele.id, ...ele.data() })
+                                            });
+                                            accounts.forEach(elem => {
+                                                let tAcc = []
+                                                let addCredit = []
+                                                let addDebit = []
+                                                finalEntries.forEach(entry => {
+                                                    if (elem.Title == entry.Title) {
+                                                        tAcc.push(entry)
+                                                        addDebit.push(entry.Debit)
+                                                        addCredit.push(entry.Credit)
+                                                    }
+                                                })
+                                                console.log(tAcc)
+                                                console.log(addDebit)
+                                                console.log(addCredit)
+                                                var sumCredit = addCredit.reduce(function (a, b) {
+                                                    return a + b;
+                                                }, 0);
+                                                var sumDebit = addDebit.reduce(function (a, b) {
+                                                    return a + b;
+                                                }, 0);
+                                                var temp = 0
+                                                if (sumDebit - sumCredit < 0) {
+                                                    sumCredit = sumCredit - sumDebit
+                                                    sumDebit = 0
+                                                } else {
+                                                    sumDebit = sumDebit - sumCredit
+                                                    sumCredit = 0
+                                                }
+                                                console.log(sumCredit)
+                                                console.log(sumDebit)
+                                                addDoc(tAccountss, {
+                                                    Title: elem.Title,
+                                                    Type: elem.Type,
+                                                    Debit: parseInt(sumDebit),
+                                                    Credit: parseInt(sumCredit)
+                                                })
 
+
+                                            })
+                                            console.log(finalEntries)
+                                            // console.log(accounts)
                                         })
-                                        var sumCredit = addCredit.reduce(function (a, b) {
-                                            return a + b;
-                                        }, 0);
-                                        var sumDebit = addDebit.reduce(function (a, b) {
-                                            return a + b;
-                                        }, 0);
-                                        var temp = 0
-                                        if (sumDebit - sumCredit < 0) {
-                                            sumCredit = sumCredit - sumDebit
-                                            sumDebit = 0
-                                        } else {
-                                            sumDebit = sumDebit - sumCredit
-                                            sumCredit = 0
-                                        }
-
-                                        addDoc(tAccountss, {
-                                            Title: accounts[i].Title,
-                                            Type: element.Type,
-                                            Debit: parseInt(sumDebit),
-                                            Credit: parseInt(sumCredit)
-                                        })
-
-                                    })
-
-                            });
+                                })
                         })
-                    return new Promise((resolve, reject) =>{
-                        setTimeout(()=>{
+                    return new Promise((resolve, reject) => {
+                        setTimeout(() => {
                             resolve();
-                        },5000)
-                    })        
+                        }, 6000)
+                    })
                 })
-                .then(()=>{
+                .then(() => {
                     location.reload()
                 })
 
@@ -232,6 +352,7 @@
 
 
         }
+
 
 
         onSnapshot(tAccountss, (snapshot) => {
