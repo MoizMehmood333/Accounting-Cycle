@@ -84,7 +84,15 @@
                 </div>
             </div>
             <br>
-
+            <div class="row justify-content-center">
+                <div class="col-2">
+                    Depreciation:
+                </div>
+                <div class="col-6">
+                    <p id="depreciation"></p>
+                </div>
+            </div>
+            <br>
             <div class="row justify-content-center">
                 <div class="col-2">
                     Assets Total:
@@ -164,6 +172,7 @@
         let Assets = []
         let Liabilities = []
         let EndingBalance = 0
+        let depreciation = []
 
         const balanceSheet = document.querySelector("#getBalanceSheet")
 
@@ -178,8 +187,12 @@
                     });
                     console.log(arr)
                     arr.forEach((docs) => {
-                        if (docs.Type == "Assests") {
-                            Assets.push(parseInt(docs.Debit))
+                        if (docs.Type == "Assests" || docs.Type == "Depreciation") {
+                            if (docs.Type == "Assests") {
+                                Assets.push(parseInt(docs.Debit-docs.Credit))
+                            } else {
+                                depreciation.push(parseInt(docs.Credit))
+                            }
                         } else if (docs.Type == "Liabilities") {
                             Liabilities.push(parseInt(docs.Credit))
                         }
@@ -187,6 +200,10 @@
                     var sumAssets = Assets.reduce(function (a, b) {
                         return a + b;
                     }, 0);
+                    var sumDepreciation = depreciation.reduce(function (a, b) {
+                        return a + b;
+                    }, 0);
+                    console.log(sumAssets)
                     var sumLiabilities = Liabilities.reduce(function (a, b) {
                         return a + b;
                     }, 0);
@@ -197,9 +214,10 @@
                             });
                             var assets = document.querySelector('#assets')
                             assets.innerText = sumAssets
-
+                            var depreciation= document.querySelector('#depreciation')
+                            depreciation.innerText = sumDepreciation
                             var assetsTotal = document.querySelector('#assetsTotal')
-                            assetsTotal.innerText = sumAssets
+                            assetsTotal.innerText = sumAssets-sumDepreciation
 
                             var liability = document.querySelector('#liabilitiesOut')
                             liability.innerText = sumLiabilities
